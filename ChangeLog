@@ -1,0 +1,7 @@
+Sat Nov 20, 1999  Jay 'Eraserhead' Felice <jasonf@nacs.net>
+	* Repackaged to use autoconf/automake.
+	* Added autoconf checks for strstr and strlwr, and we have our own
+	  implementations if those checks fail.
+	* Changed 'l' option to 't' to be consistent with the emulator.
+	* Added syntax() function, changed option handling to allow output
+	  to be written to the standard output stream.

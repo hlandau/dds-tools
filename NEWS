@@ -1,0 +1,6 @@
+dds-tools NEWS
+------------------------------------------------------------------------------
+
+Sat Nov 20, 1999
+	* Repackaged to use autoconf/automake and put into CLUG CVS
+	  (cvs.cleveland.lug.net).  Released as 0.3

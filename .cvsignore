@@ -1,0 +1,15 @@
+Makefile.in
+config.status
+config.cache
+config.log
+configure
+*.o
+*.lo
+*~
+dds2curses
+dds2sql
+install-sh
+missing
+mkinstalldirs
+aclocal.m4
+INSTALL

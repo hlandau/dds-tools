@@ -1,0 +1,64 @@
+dds-tools README
+------------------------------------------------------------------------------
+
+ddstools - tools for converting AS/400 QDDSSRC files.
+
+ddstools is distributed under the GNU General Public License.
+Please see the file COPYING for license terms.
+
+ddstools consists of two programs: dds2sql and dds2curses.
+
+dds2sql converts QDDSSRC source files for describing externally
+described files to an SQL table definition.  I use MySQL so I
+know it works for that.  Once the table is created you can run:
+
+mysql < outputfile
+
+where outputfile is the file created by dds2sql.
+
+dds2curses takes a QDDSSRC display file definition and converts
+it to C code suitable for the ncurses library.  The resulting
+code can then be used in C programs to create screens.
+
+To build ddstools you must have installed:
+
+ - ncurses (curses will probably also work)
+
+Actually you don't.  You only need ncurses to use dds2curses
+output in your programs.  If you don't need this then you are set.
+Then review the Makefile to be sure everything looks right.
+Then type 'make'.  Everything should build with no errors.
+
+To use dds2sql and dds2curses you first need to get the DDS source
+member from the AS/400.  I use FTP on the AS/400 to do this.  Start
+FTP on the AS/400 and connect to the host you want to run the
+conversions on.  Then send the appropriate DDS source member:
+
+put <library>/QDDSSRC.<member> <name>
+
+where <library> is the library that your source file is in and
+<member> is the member you want to send.  You don't have to specify
+<name> if you don't want - it just allows you to name the file
+on the receiving host (other than the default - qddssrc.<member>).
+
+Once you have the source files on your UNIX host you can run dds2sql:
+
+$ dds2sql <inputfile> <outputfile>
+
+where <inputfile> is the name of the DDS source member you sent (<name>
+if you specified it) and <outputfile> is the name you want to use for
+the SQL table name.
+
+Run dds2curses:
+
+$ dds2curses <inputfile> <outputfile>
+
+where <inputfile> is the name of the DDS source member you sent (<name>
+if you specified it) and <outputfile> is the name of the file to store
+the curses C code (maybe something like screens.c).
+
+If you have problems or questions send them to me at:
+
+james.rich@m.cc.utah.edu
+
+James Rich
