@@ -184,10 +184,17 @@ Notes:
 int 
 main (int argc, char *argv[])
 {
-
+#ifdef VERSION
+  char version[] = VERSION;
+#endif
   char string[MAXCHARS];
   int length, dpt, i, j = 0, keyflag = 0;
   long position;
+  char *outfilename = NULL, *logfilename = NULL; /* These are used so we can
+                                                  * open output and logging
+                                                  * files after input file is 
+                                                  * opened
+                                                  */
   extern char *optarg;
   extern int optind, opterr, optopt;
 
@@ -201,11 +208,9 @@ main (int argc, char *argv[])
       switch (i)
 	{
 	case 't':
-	  if ((logfile = fopen (optarg,"w")) == NULL)
-	    {
-	      perror (optarg);
-	      exit (1);
-	    }
+          logfilename = (char *) malloc (sizeof (char) * (strlen (optarg) + 1));
+          strcpy (logfilename, optarg);
+          logfilename[strlen (optarg)] = '\0';
 	  break;
 
 	case 'o':

@@ -131,6 +131,7 @@ main (int argc, char *argv[])
 						  * files after input file is 
 						  * opened
 						  */
+  char *infilename = NULL; /* Use this for output message */
   extern char *optarg;
   extern int optind, opterr, optopt;
 
@@ -170,9 +171,13 @@ main (int argc, char *argv[])
   if (argc - optind != 1)
     syntax ();
 
-  if ((infile = fopen (argv[optind], "r")) == NULL)
+  infilename = (char *) malloc (sizeof (char) * (strlen (argv[optind]) + 1));
+  strcpy (infilename, argv[optind]);
+  infilename[strlen (argv[optind])] = '\0';
+
+  if ((infile = fopen (infilename, "r")) == NULL)
     {
-      perror (argv[optind]);
+      perror (infilename);
       exit (1);
     }
 
@@ -219,7 +224,7 @@ main (int argc, char *argv[])
   fprintf (outfile, " *   char value[MAXCHARS];\n");
   fprintf (outfile, " * }field;\n");
   fprintf (outfile, " * \n");
-  fprintf (outfile, " * void %s (field *fields);\n", argv[1]);
+  fprintf (outfile, " * void %s (field *fields);\n", infilename);
   fprintf (outfile, " */\n");
 
 
