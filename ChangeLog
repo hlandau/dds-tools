@@ -1,3 +1,7 @@
+Sun Nov 21, 1999  James Rich <james.rich@m.cc.utah.edu>
+	* Added program version to the usage message.
+	* Don't create tracefile if opening input/output file fails.
+
 Sat Nov 20, 1999  Jay 'Eraserhead' Felice <jasonf@nacs.net>
 	* Repackaged to use autoconf/automake.
 	* Added autoconf checks for strstr and strlwr, and we have our own

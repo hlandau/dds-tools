@@ -118,11 +118,19 @@ Notes:\n\
 int
 main (int argc, char *argv[])
 {
+#ifdef VERSION
+  char version[] = VERSION;
+#endif
   char line[MAXCHARS];
   char string[MAXCHARS];
   char teststr[MAXCHARS];
   int length = 0, i, j = 0, cur_line, cur_col, cmpltfunc = 0;
   int fieldlen, fieldcount = 0;
+  char *outfilename = NULL, *logfilename = NULL; /* These are used so we can
+						  * open output and logging
+						  * files after input file is 
+						  * opened
+						  */
   extern char *optarg;
   extern int optind, opterr, optopt;
 
@@ -135,19 +143,15 @@ main (int argc, char *argv[])
       switch (i)
 	{
 	case 't':
-	  if ((logfile = fopen (optarg, "w")) == NULL)
-	    {
-	      perror (optarg);
-	      exit (1);
-	    }
+	  logfilename = (char *) malloc (sizeof (char) * (strlen (optarg) + 1));
+	  strcpy (logfilename, optarg);
+	  logfilename[strlen (optarg)] = '\0';
 	  break;
 
 	case 'o':
-	  if ((outfile = fopen (optarg, "w")) == NULL)
-	    {
-	      perror (optarg);
-	      exit (1);
-	    }
+	  outfilename = (char *) malloc (sizeof (char) * (strlen (optarg) + 1));
+	  strcpy (outfilename, optarg);
+	  outfilename[strlen (optarg)] = '\0';
 	  break;
 
 	default:
@@ -157,19 +161,50 @@ main (int argc, char *argv[])
 
 
 
-  /* Always check to make sure that you succeeded in opening the file. */
+  /* Always check to make sure that you succeeded in opening the file.
+   * We open first the input file, then output, then log.  This way if
+   * the input file does not exist (user made a typo or something) we
+   * don't create empty output and log files
+   */
 
   if (argc - optind != 1)
     syntax ();
 
-  infile = fopen (argv[optind], "r");
-  if (infile == NULL)
+  if ((infile = fopen (argv[optind], "r")) == NULL)
     {
       perror (argv[optind]);
       exit (1);
     }
 
+  if (outfilename != NULL)
+    {
+      if ((outfile = fopen (outfilename, "w")) == NULL)
+	{
+	  perror (outfilename);
+	  fclose (infile);
+	  exit (1);
+	}
+    }
+
+  if (logfilename != NULL)
+    {
+      if ((logfile = fopen (logfilename, "w")) == NULL)
+	{
+	  perror (logfilename);
+	  fclose (infile);
+	  if (outfilename != NULL)
+	    {
+	      fclose (outfile);
+	    }
+	  exit (1);
+	}
+    }
+
+#ifdef VERSION
+  fprintf (outfile, "/* dds2curses\tversion %s\tby James Rich\n", version);
+#else
   fprintf (outfile, "/* dds2curses\tby James Rich\n");
+#endif
   fprintf (outfile, " * This is a generated file!\n");
   fprintf (outfile, " * For things to work you need to have the following\n");
   fprintf (outfile, " * definitions somewhere in your program:\n");
@@ -341,5 +376,9 @@ main (int argc, char *argv[])
   fprintf (outfile, "}\n");
   fclose (infile);
   fclose (outfile);
+  if (logfilename != NULL)
+    {
+      fclose (logfile);
+    }
   return 0;
 }
